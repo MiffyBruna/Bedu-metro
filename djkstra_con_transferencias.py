@@ -1,9 +1,7 @@
 from collections import defaultdict
 import heapq
 import random
-
-
-from djkstra_una_estacion import  linea_1, linea_2, linea_3, linea_4, linea_5, linea_6, linea_7, linea_8, linea_9, linea_A, linea_B, linea_12
+from lineas import  linea_1, linea_2, linea_3, linea_4, linea_5, linea_6, linea_7, linea_8, linea_9, linea_A, linea_B, linea_12
 
 lineas = [linea_1, linea_2, linea_3, linea_4, linea_5, linea_6, linea_7, linea_8, linea_9, linea_A, linea_B, linea_12]
 
