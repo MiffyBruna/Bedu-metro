@@ -110,9 +110,13 @@ print(f"Data saved to {json_file_name}")
 # 1- ASEGURARSE QUE  CUANDO LO CORREN POR PRIMERA VEZ last_user_id.txt este en 0
 # 2- ASEGURAR QUE users_data.json este vacio (POR SI ACASO)
 # 3-IMPORTANTE:
-#RENOMBRAR EL JSON GENERADO, DE OTRA MANERA LO QUE VA A HACER ES REESCRIBIRLO
+#COPIAR Y RENOMBRAR EL JSON GENERADO, DE OTRA MANERA LO QUE VA A HACER ES REESCRIBIRLO
 #NO QUIEREN PERDER EL PROGRESO
-
+#
+#RENOMNRAR Y COPIAR EN LA TERMINAL
+# Para Linux y macOS:  cp ruta_archivo_origen ruta_archivo_destino
+# Para el Símbolo del sistema de Windows: copy ruta_archivo_origen ruta_archivo_destino
+# Para PowerShell de Windows: copy-Item -Path ruta_archivo_origen -Destination ruta_archivo_destino
 
 
 #############################################################################
