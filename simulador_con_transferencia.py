@@ -1,30 +1,19 @@
+import os
 import random
-from datetime import date, datetime, time, timedelta
+import json
+from datetime import date, datetime, timedelta
 from lineas import  linea_1, linea_2,linea_3, linea_4, linea_5, linea_6, linea_7, linea_8, linea_9, linea_A, linea_B, linea_12
 from djkstra_con_transferencias import dijkstra, metro_graph
 
 todas_las_estaciones = list(set().union(linea_1, linea_2, linea_3, linea_4, linea_5, linea_6, linea_7, linea_8, linea_9, linea_A, linea_B, linea_12))
 
-def simulate_commuter_journey():
-    start_station = random.choice(todas_las_estaciones)
-    end_station = random.choice(todas_las_estaciones)
-    
-    # Asegurarnos que la estación de inicio y destino no sean la misma
-    while end_station == start_station:
-        end_station = random.choice(todas_las_estaciones)
 
-
+def simulate_commuter_journey(start_time, start_station, end_station):
+    #Genera el camino mas corto entre estaciones
     station_count, journey_stations,lines_rider_transfered = dijkstra(metro_graph, start_station, end_station)
 
     # Elige una duración al azar del viaje por estación
-    journey_time_minutes = (station_count - 1) * random.randint(3, 5)
-
-    # Generar una fecha y hora aleatorias
-    start_date = date(2023, 1, 1)
-    end_date = date(2024, 2, 2)
-    random_days = random.randint(0, (end_date - start_date).days)
-    random_day = start_date + timedelta(days=random_days)
-    start_time = datetime.combine(random_day, time(random.randint(5, 23), random.randint(0, 59)))
+    journey_time_minutes = (station_count - 1) * random.randint(3, 15)
 
     # Calcula la hora de fin del viaje
     end_time = start_time + timedelta(minutes=journey_time_minutes)
@@ -45,10 +34,90 @@ def simulate_commuter_journey():
         "Estación de salida": end_station,
         "Lineas que fueron usadas": lines_rider_transfered,
     }
-    
 
-num_commuters = 1  # Cantidad de entradas
-commuter_journeys = [simulate_commuter_journey() for _ in range(num_commuters)]
 
-for journey in commuter_journeys:
-    print(journey)
+def generate_week_of_entries(start_date, start_station, end_station):
+    entries = []
+    days_generated = 0  # Lleva el registro de los días generados
+    while days_generated < 15:  # Generar datos para 15 días
+        if start_date.weekday() != 6:  # Saltar domingo
+            start_time = datetime(start_date.year, start_date.month, start_date.day, start_hour, random.randint(0, 14))
+            entries.append(simulate_commuter_journey(start_time, start_station, end_station))
+            days_generated += 1
+        start_date += timedelta(days=1)  # Siguiente día
+    return entries
+
+num_commuters = 1 
+start_date = date(2023, 7, 3)  # Fecha de inicio siempre tiene que ser lunes 
+start_hour= random.randint(7, 8)
+start_station = random.choice(todas_las_estaciones)
+
+
+#Guarda el ultimo id usado
+def save_last_user_id(file_name, last_id):
+    with open(file_name, 'w') as file:
+        file.write(str(last_id))
+#Encuentra el ultimo id guardado
+def get_last_user_id(file_name):
+    if os.path.exists(file_name):
+        with open(file_name, 'r') as file:
+            last_id = int(file.read())
+    else:
+        last_id = 0
+    return last_id
+
+# Aqui se guarda memo el ultimo id usado
+last_id_file = 'last_user_id.txt'
+last_user_id = get_last_user_id(last_id_file)
+
+
+def generate_users_data(num_users,start_id):
+    user_dict = {}
+    for user_id in range(start_id + 1, start_id + num_users + 1):
+        start_date = date(2023, 7, 3)  # Fecha de inicio siempre tiene que ser lunes
+        start_station = random.choice(todas_las_estaciones)
+
+        end_station = random.choice(todas_las_estaciones)
+        # Asegurarnos que la estación de inicio y destino no sean la misma
+        while end_station == start_station:
+            end_station = random.choice(todas_las_estaciones)
+
+        user_entries = generate_week_of_entries(start_date, start_station, end_station)
+        user_dict[user_id] = user_entries
+
+    return user_dict
+
+num_users = 100000 #numero de usuarios a generar  max 100000 
+
+last_user_id = get_last_user_id(last_id_file)
+
+
+users_data = generate_users_data(num_users, last_user_id)
+
+json_file_name = 'users_data.json'
+
+
+
+#INSTRUCCIONES
+# 1- ASEGURARSE QUE  CUANDO LO CORREN POR PRIMERA VEZ last_user_id.txt este en 0
+# 2- ASEGURAR QUE users_data.json este vacio (POR SI ACASO)
+# 3-IMPORTANTE:
+#RENOMBRAR EL JSON GENERADO, DE OTRA MANERA LO QUE VA A HACER ES REESCRIBIRLO
+#NO QUIEREN PERDER EL PROGRESO
+
+
+
+#############################################################################
+
+#LO DE ACA ABAJO ES INTENTO FALLIDO DE HACER QUE SE RENOMBRE Y GUARDE
+#SOLO OCASIONA PROBLEMAS SE ACEPTAN SUGERENCIAS 
+
+# os.rename(json_file_name, f'users_data{last_user_id}to{last_user_id + num_users}.json')
+
+# with open(json_file_name, 'w', encoding='utf-8') as file:
+#     json.dump(users_data, file, ensure_ascii=False, indent=4)
+
+# # Update the last user ID
+# save_last_user_id(last_id_file, last_user_id + num_users)
+
+# print(f"Data saved to {json_file_name}")
