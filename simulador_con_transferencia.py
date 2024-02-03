@@ -87,7 +87,7 @@ def generate_users_data(num_users,start_id):
 
     return user_dict
 
-num_users = 100000 #numero de usuarios a generar  max 100000 
+num_users = 1 #numero de usuarios a generar  max 100000 
 
 last_user_id = get_last_user_id(last_id_file)
 
@@ -95,6 +95,14 @@ last_user_id = get_last_user_id(last_id_file)
 users_data = generate_users_data(num_users, last_user_id)
 
 json_file_name = 'users_data.json'
+# Save users_data to a JSON file
+with open(json_file_name, 'w') as json_file:
+    json.dump(users_data, json_file, ensure_ascii=False, indent=4)
+
+save_last_user_id(last_id_file, last_user_id + num_users)
+print(f"Data saved to {json_file_name}")
+
+
 
 
 
@@ -118,6 +126,6 @@ json_file_name = 'users_data.json'
 #     json.dump(users_data, file, ensure_ascii=False, indent=4)
 
 # # Update the last user ID
-# save_last_user_id(last_id_file, last_user_id + num_users)
+save_last_user_id(last_id_file, last_user_id + num_users)
 
-# print(f"Data saved to {json_file_name}")
+print(f"Data saved to {json_file_name}")
