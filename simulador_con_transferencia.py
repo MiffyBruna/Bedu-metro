@@ -124,8 +124,3 @@ print(f"Data saved to {json_file_name}")
 
 # with open(json_file_name, 'w', encoding='utf-8') as file:
 #     json.dump(users_data, file, ensure_ascii=False, indent=4)
-
-# # Update the last user ID
-save_last_user_id(last_id_file, last_user_id + num_users)
-
-print(f"Data saved to {json_file_name}")
