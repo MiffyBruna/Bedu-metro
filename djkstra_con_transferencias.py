@@ -34,8 +34,4 @@ def dijkstra(metro_graph, start, end):
                     heapq.heappush(queue, (time + next_cost, next_node, list(path), new_lines))
 
     return float("inf"), [], []
-todas_las_estaciones = list(set().union(linea_1, linea_2, linea_3, linea_4, linea_5, linea_6, linea_7, linea_8, linea_9, linea_A, linea_B, linea_12))
-start = random.choice(todas_las_estaciones)
-end= random.choice(todas_las_estaciones)
-
 
