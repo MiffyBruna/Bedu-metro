@@ -21,7 +21,7 @@ def simulate_commuter_journey(start_time, start_station, end_station):
 
     #Generar aleatoriamente compras, e interactua con app
     interactua_con_app = random.choice(["Si", "No"])
-    compras_en_app = random.randint(1, 3)
+    compras_en_app = random.randint(0, 13)
 
     return {
         "HoraDeEntrada": start_time.strftime("%H:%M:%S"),
@@ -36,20 +36,20 @@ def simulate_commuter_journey(start_time, start_station, end_station):
     }
 
 
-def generate_week_of_entries(start_date, start_station, end_station):
+def generate_week_of_entries(start_date, start_station, end_station, start_hour):
     entries = []
     days_generated = 0  # Lleva el registro de los días generados
     while days_generated < 15:  # Generar datos para 15 días
         if start_date.weekday() != 6:  # Saltar domingo
-            start_time = datetime(start_date.year, start_date.month, start_date.day, start_hour, random.randint(0, 14))
+            start_time = datetime(start_date.year, start_date.month, start_date.day, start_hour, random.randint(0, 59))
             entries.append(simulate_commuter_journey(start_time, start_station, end_station))
             days_generated += 1
         start_date += timedelta(days=1)  # Siguiente día
     return entries
 
+
 num_commuters = 1 
 start_date = date(2023, 7, 3)  # Fecha de inicio siempre tiene que ser lunes 
-start_hour= random.randint(7, 8)
 start_station = random.choice(todas_las_estaciones)
 
 
@@ -73,6 +73,7 @@ last_user_id = get_last_user_id(last_id_file)
 
 def generate_users_data(num_users,start_id):
     user_dict = {}
+
     for user_id in range(start_id + 1, start_id + num_users + 1):
         start_date = date(2023, 7, 3)  # Fecha de inicio siempre tiene que ser lunes
         start_station = random.choice(todas_las_estaciones)
@@ -82,8 +83,10 @@ def generate_users_data(num_users,start_id):
         while end_station == start_station:
             end_station = random.choice(todas_las_estaciones)
 
-        user_entries = generate_week_of_entries(start_date, start_station, end_station)
-        user_dict[user_id] = user_entries
+        start_hour= random.randint(5, 11)
+
+        user_entries = generate_week_of_entries(start_date, start_station, end_station, start_hour)
+        user_dict[user_id] = user_entries 
 
     return user_dict
 
@@ -94,7 +97,7 @@ last_user_id = get_last_user_id(last_id_file)
 
 users_data = generate_users_data(num_users, last_user_id)
 
-json_file_name = 'users_data.json'
+json_file_name = f'usuarios_metro_data{last_user_id}.json'
 # Save users_data to a JSON file
 with open(json_file_name, 'w') as json_file:
     json.dump(users_data, json_file, ensure_ascii=False, indent=4)
@@ -107,24 +110,10 @@ print(f"Data saved to {json_file_name}")
 
 
 #INSTRUCCIONES
+#SOLO POR PRIMERA VEZ O SI QUIEREN REINICIAR LA CUENTA DE USUARIOS
 # 1- ASEGURARSE QUE  CUANDO LO CORREN POR PRIMERA VEZ last_user_id.txt este en 0
 # 2- ASEGURAR QUE users_data.json este vacio (POR SI ACASO)
-# 3-IMPORTANTE:
-#COPIAR Y RENOMBRAR EL JSON GENERADO, DE OTRA MANERA LO QUE VA A HACER ES REESCRIBIRLO
-#NO QUIEREN PERDER EL PROGRESO
-#
-#RENOMNRAR Y COPIAR EN LA TERMINAL
-# Para Linux y macOS:  cp ruta_archivo_origen ruta_archivo_destino
-# Para el Símbolo del sistema de Windows: copy ruta_archivo_origen ruta_archivo_destino
-# Para PowerShell de Windows: copy-Item -Path ruta_archivo_origen -Destination ruta_archivo_destino
-
 
 #############################################################################
 
-#LO DE ACA ABAJO ES INTENTO FALLIDO DE HACER QUE SE RENOMBRE Y GUARDE
-#SOLO OCASIONA PROBLEMAS SE ACEPTAN SUGERENCIAS 
 
-# os.rename(json_file_name, f'users_data{last_user_id}to{last_user_id + num_users}.json')
-
-# with open(json_file_name, 'w', encoding='utf-8') as file:
-#     json.dump(users_data, file, ensure_ascii=False, indent=4)
