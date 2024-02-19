@@ -90,7 +90,7 @@ def generate_users_data(num_users,start_id):
 
     return user_dict
 
-num_users = 1 #numero de usuarios a generar  max 100000 
+num_users = 10  #numero de usuarios a generar  max 100000 
 
 last_user_id = get_last_user_id(last_id_file)
 
